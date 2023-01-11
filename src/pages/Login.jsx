@@ -1,16 +1,28 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import loginImage from "../assets/login.svg";
+import { loginUser, loginUserWithGoogle } from "../features/auth/authSlice";
 
 const Login = () => {
+  const {isLoading,email,isError,error}=useSelector(state=>state.auth)
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
-
-  const onSubmit = (data) => {
-    console.log(data);
+  const dispatch = useDispatch()
+  const onSubmit = ({email,password}) => {
+    const data = {email,password}
+    dispatch(loginUser(data))
   };
-
+  const handleGooglelogin =()=>{
+    dispatch(loginUserWithGoogle())
+  }
+  useEffect(() => {
+    if(!isLoading && email){
+      navigate('/')
+    }
+  }, [isLoading,email,navigate])
+  
   return (
     <div className='flex h-screen items-center'>
       <div className='w-1/2'>
@@ -44,6 +56,7 @@ const Login = () => {
                 >
                   Login
                 </button>
+                {isError && <span className="text-red-500">{error}</span>}
               </div>
               <div>
                 <p>
@@ -55,6 +68,15 @@ const Login = () => {
                     Sign up
                   </span>
                 </p>
+              </div>
+              <div className='relative !mt-8'>
+                <button
+                  type='button'
+                  className='font-bold text-white py-3 rounded-full bg-primary w-full'
+                  onClick={()=>handleGooglelogin()}
+                >
+                  Login With Google
+                </button>
               </div>
             </div>
           </form>

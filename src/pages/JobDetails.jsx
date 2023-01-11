@@ -16,7 +16,6 @@ const JobDetails = () => {
     responsibilities,
     overview,
     queries,
-    _id,
   } = {};
 
   return (
